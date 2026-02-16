@@ -1,6 +1,6 @@
 # Text-Replacer
 Replaces user-inputted search text with replacement text. Supports wildcard search and replace.
-Example use: './text_replacer -i in.txt -o out.txt -s foo -r bar' replaces all occurrences of "the" in 'in.txt' with "bar" and outputs it to `out.txt`.
+Example use: `./text_replacer -i in.txt -o out.txt -s foo -r bar` replaces all occurrences of "the" in `in.txt` with "bar" and outputs it to `out.txt`.
 
 # How to use
 You must have the GCC compiler installed. Once installed, open the terminal, navigate to the proper directory and enter `gcc src/copy.c src/errors.c src/main.c -I include -o text_replacer`. Then execute `text_replacer`, using the flags below:
