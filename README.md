@@ -24,6 +24,9 @@ You must have the GCC compiler installed. Once installed, open the terminal, nav
     Only replace occurrences between the start and end lines (inclusive)
     All other text is copied normally
 
+-b  Optional. Takes 1 argument (buffer size)
+    Example: If "think" is being read and the buffer size is 3,
+    The first word read will be "thi" and "nk" is a separate word
 
 If only -i and -o are defined, the input file is copied into the output file.
 If only -i, -o and -l are defined, only the given lines will be copied.
