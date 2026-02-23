@@ -9,7 +9,7 @@ You must have the GCC compiler installed. Once installed, open the terminal, nav
 
 -o  Required. Takes 1 argument (output file)
 
--s  Optional (required if -r or -w are defined). Takes 1 argument (search text)
+-s  Optional (required if -r, -c, -w or -b are defined). Takes 1 argument (search text)
     Replaces all occurrences of the search text with the replacement text
     Is case-sensitive and matches on whole words
     Note that words are separated by whitespace
@@ -28,7 +28,7 @@ You must have the GCC compiler installed. Once installed, open the terminal, nav
 
 -b  Optional. Takes 1 argument (buffer size)
     Example: If "think" is being read and the buffer size is 3,
-    The first word read will be "thi" and "nk" is a separate word
+    The first word read will be "thi" and "nk" is the next word
 
 If only -i and -o are defined, the input file is copied into the output file.
 If only -i, -o and -l are defined, only the given lines will be copied.

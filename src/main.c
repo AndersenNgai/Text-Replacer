@@ -8,7 +8,7 @@
 #define HELP_TEXT "Flags:\n\
 -i  Required. Takes 1 argument (input file)\n\
 -o  Required. Takes 1 argument (output file)\n\
--s  Optional (required if -r or -w are defined). Takes 1 argument (search text)\n\
+-s  Optional (required if -r, -c, -w or -b are defined). Takes 1 argument (search text)\n\
     Replaces all occurrences of the search text with the replacement text\n\
     Matches on whole words and is not case-sensitive by default\n\
     Note that words are separated by whitespace\n\
@@ -22,7 +22,7 @@
     All other text is copied normally\n\
 -b  Optional. Takes 1 argument (buffer size)\n\
     Example: If \"think\" is being read and the buffer size is 3,\n\
-    The first word read will be \"thi\" and \"nk\" is a separate word\n\n\
+    The first word read will be \"thi\" and \"nk\" is the next word\n\n\
 If only -i and -o are defined, the input file is copied into the output file\n\
 If only -i, -o and -l are defined, only the given lines will be copied\n\n"
 
@@ -204,6 +204,8 @@ int main(int argc, char *argv[]) {
             return ERROR_OTHER_FLAGS_MISSING('s', 'c');
         if (wildcard)
             return ERROR_OTHER_FLAGS_MISSING('s', 'w');
+        if (buffer_size_str)
+            return ERROR_OTHER_FLAGS_MISSING('s', 'b');
     }
 
     long int start_line = -1, end_line = -1;
@@ -223,8 +225,6 @@ int main(int argc, char *argv[]) {
 
     long int buffer_size = 32; // Important: This does NOT include \0
     if (buffer_size_str) {
-        if (s_text == NULL)
-            return ERROR_OTHER_FLAGS_MISSING('s', 'b');
         char *endptr;
         buffer_size = strtol(buffer_size_str, &endptr, 10);
         if (endptr == buffer_size_str || *endptr != '\0')
