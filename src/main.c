@@ -18,7 +18,10 @@
     Words are alphanumeric and are separated by punctuation and whitespace\n\
 -l  Optional. Takes 2 arguments (start and end lines)\n\
     Only replace occurrences between the start and end lines (inclusive)\n\
-    All other text is copied normally\n\n\
+    All other text is copied normally\n\
+-b  Optional. Takes 1 argument (buffer size)\n\
+    Example: If \"think\" is being read and the buffer size is 3,\n\
+    The first word read will be \"thi\" and \"nk\" is a separate word\n\n\
 If only -i and -o are defined, the input file is copied into the output file\n\
 If only -i, -o and -l are defined, only the given lines will be copied\n\n"
 
@@ -68,6 +71,7 @@ int main(int argc, char *argv[]) {
         *s_text = NULL, *r_text = NULL;
     int wildcard = 0; // -1 = *text, 1 = text*
     char *start_line_str = NULL, *end_line_str = NULL;
+    char *buffer_size_str = NULL;
     argv++;
     while (*argv) {
         // Check only for flags and act accordingly from there, since each flag takes a set number of arguments
@@ -128,6 +132,15 @@ int main(int argc, char *argv[]) {
             if (*argv == NULL || isflag(*argv))
                 return ERROR_FLAG_ARG_COUNT("Flag -l takes 2 arguments");
             end_line_str = *argv;
+            break;
+
+        case 'b':
+            if (buffer_size_str)
+                return ERROR_DUPLICATE_FLAG('b');
+            argv++;
+            if (*argv == NULL || isflag(*argv))
+                return ERROR_FLAG_ARG_COUNT("Flag -b takes 1 argument");
+            buffer_size_str = *argv;
             break;
 
         default:
@@ -198,6 +211,18 @@ int main(int argc, char *argv[]) {
             return ERROR_FLAG_BAD_ARGS("Starting line cannot be after end line");
     }
 
+    long int buffer_size = 32; // Important: This does NOT include \0
+    if (buffer_size_str) {
+        if (s_text == NULL)
+            return ERROR_OTHER_FLAGS_MISSING('s', 'b');
+        char *endptr;
+        buffer_size = strtol(buffer_size_str, &endptr, 10);
+        if (endptr == buffer_size_str || *endptr != '\0')
+            return ERROR_FLAG_BAD_ARGS("Flag -l takes positive integers");
+        if (buffer_size < s_length)
+            return ERROR_FLAG_BAD_ARGS("Buffer size must not be less than the length of the search text");
+    }
+
     if (strcmp(infile_path, outfile_path) == 0)
         return ERROR_CANNOT_WRITE(outfile_path, 1);
 
@@ -223,7 +248,7 @@ int main(int argc, char *argv[]) {
         else
             copy_lines(infile, outfile, start_line, end_line);
     else
-        copy_replace(infile, outfile, s_text, r_text, wildcard, start_line, end_line);
+        copy_replace(infile, outfile, s_text, r_text, wildcard, start_line, end_line, buffer_size);
     
     fclose(infile);
     fclose(outfile);

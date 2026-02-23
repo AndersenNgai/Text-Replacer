@@ -88,7 +88,8 @@ void copy_lines(FILE *infile, FILE *outfile, long int start, long int end) {
 }
 
 /* Copy and replace search text with replacement text */
-void copy_replace(FILE *infile, FILE *outfile, char *s_text, char *r_text, int wildcard, long int start_line, long int end_line) {
+void copy_replace(FILE *infile, FILE *outfile, char *s_text, char *r_text, int wildcard,
+                  long int start_line, long int end_line, long int buffer_size) {
 
     long int current_line = 1;
     if (start_line > 0) {
@@ -103,12 +104,12 @@ void copy_replace(FILE *infile, FILE *outfile, char *s_text, char *r_text, int w
         }
     }
 
-    char buffer[1001];
+    char buffer[buffer_size + 1];
     int read, length, s_len;
     char boundary;
     switch (wildcard) {
         case 0: do {
-            read = read_standard(infile, buffer, 1000, &boundary);
+            read = read_standard(infile, buffer, buffer_size, &boundary);
             if (strcmp(buffer, s_text) == 0)
                 fputs(r_text, outfile);
             else
@@ -126,7 +127,7 @@ void copy_replace(FILE *infile, FILE *outfile, char *s_text, char *r_text, int w
         case -1: // *text
             s_len = strlen(s_text);
             do {
-            read = read_wild(infile, buffer, 1000, &length, &boundary);
+            read = read_wild(infile, buffer, buffer_size, &length, &boundary);
             if (length >= s_len && strcmp(buffer + length - s_len, s_text) == 0)
                 fputs(r_text, outfile);
             else
@@ -146,7 +147,7 @@ void copy_replace(FILE *infile, FILE *outfile, char *s_text, char *r_text, int w
             int match;
             s_len = strlen(s_text);
             do {
-            read = read_wild(infile, buffer, 1000, &length, &boundary);
+            read = read_wild(infile, buffer, buffer_size, &length, &boundary);
             match = 0;
             if (length >= s_len) {
                 match = 1;
