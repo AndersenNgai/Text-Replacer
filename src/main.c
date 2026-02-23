@@ -10,9 +10,10 @@
 -o  Required. Takes 1 argument (output file)\n\
 -s  Optional (required if -r or -w are defined). Takes 1 argument (search text)\n\
     Replaces all occurrences of the search text with the replacement text\n\
-    Is case-sensitive and matches on whole words\n\
+    Matches on whole words and is not case-sensitive by default\n\
     Note that words are separated by whitespace\n\
 -r  Optional (required if -s is defined). Takes 1 argument (replacement text)\n\
+-c  Optional. Takes no arguments. Matching becomes case-sensitive\n\
 -w  Optional. Takes no arguments. Enables wildcard searching\n\
     Search text must be either prefix wild* or postfix *wild\n\
     Words are alphanumeric and are separated by punctuation and whitespace\n\
@@ -69,7 +70,8 @@ int main(int argc, char *argv[]) {
     // Process command line arguments
     char *infile_path = NULL, *outfile_path = NULL,
         *s_text = NULL, *r_text = NULL;
-    int wildcard = 0; // -1 = *text, 1 = text*
+    int case_sensitive = 0;                 // Default not case sensitive
+    int wildcard = 0;                       // -1 = *text, 1 = text*
     char *start_line_str = NULL, *end_line_str = NULL;
     char *buffer_size_str = NULL;
     argv++;
@@ -114,6 +116,12 @@ int main(int argc, char *argv[]) {
             if (*argv == NULL || isflag(*argv))
                 return ERROR_FLAG_ARG_COUNT("Flag -r takes 1 argument");
             r_text = *argv;
+            break;
+
+        case 'c':
+            if (case_sensitive)
+                return ERROR_DUPLICATE_FLAG('c');
+            case_sensitive = 1;
             break;
 
         case 'w':
@@ -192,6 +200,8 @@ int main(int argc, char *argv[]) {
     else {
         if (r_text)
             return ERROR_OTHER_FLAGS_MISSING('s', 'r');
+        if (case_sensitive)
+            return ERROR_OTHER_FLAGS_MISSING('s', 'c');
         if (wildcard)
             return ERROR_OTHER_FLAGS_MISSING('s', 'w');
     }
@@ -248,7 +258,7 @@ int main(int argc, char *argv[]) {
         else
             copy_lines(infile, outfile, start_line, end_line);
     else
-        copy_replace(infile, outfile, s_text, r_text, wildcard, start_line, end_line, buffer_size);
+        copy_replace(infile, outfile, s_text, r_text, case_sensitive, wildcard, start_line, end_line, buffer_size);
     
     fclose(infile);
     fclose(outfile);

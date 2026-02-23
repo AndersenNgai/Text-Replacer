@@ -16,6 +16,8 @@ You must have the GCC compiler installed. Once installed, open the terminal, nav
     
 -r  Optional (required if -s is defined). Takes 1 argument (replacement text)
 
+-c  Optional. Takes no arguments. Matching becomes case-sensitive
+
 -w  Optional. Takes no arguments. Enables wildcard searching
     Search text must be either prefix wild* or postfix *wild
     Words are alphanumeric and are separated by punctuation and whitespace
