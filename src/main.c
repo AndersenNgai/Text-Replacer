@@ -40,7 +40,7 @@ Error codes:
 
 */
 
-// gcc src/copy.c src/errors.c src/main.c -I include
+// gcc src/copy.c src/errors.c src/main.c -I include -o text_replacer
 
 // Returns nonzero if str is a flag, 0 otherwise
 int isflag(char *str) {
@@ -50,8 +50,11 @@ int isflag(char *str) {
 }
 
 int main(int argc, char *argv[]) {
-    // There is an edge case where the input and output paths are the same
-    // This will erase the file if it already exists
+    
+    if (argc == 1) {
+        printf(HELP_TEXT);
+        return 0;
+    }
     
     // Help flag (if present, ignore all other commands)
     for (int i = 1; i < argc; i++)

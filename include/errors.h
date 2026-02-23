@@ -1,5 +1,3 @@
-void close_files(FILE *, FILE *);
-
 int ERROR_CANNOT_READ(char *);
 
 int ERROR_CANNOT_WRITE(char *, int);
